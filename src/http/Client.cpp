@@ -24,9 +24,9 @@ Client::~Client()
 
 Response Client::doGet(const std::string &url, const std::initializer_list<Param> &params)
 {
-    const std::string fullUrl = makeFullUrl(url, params);
-    std::cout << "fullUrl=" << fullUrl << std::endl;
     Response response;
+    const std::string fullUrl = makeFullUrl(url, params);
+    //std::cout << "fullUrl=" << fullUrl << std::endl;
 
     if (m_curl != nullptr) {
         curl_easy_setopt(m_curl, CURLOPT_URL, fullUrl.c_str());
@@ -39,15 +39,12 @@ Response Client::doGet(const std::string &url, const std::initializer_list<Param
         curl_easy_setopt(m_curl, CURLOPT_HEADERFUNCTION, writeCallback);
 
         CURLcode res = curl_easy_perform(m_curl);
-        std::cout << "CURLcode: " << res << std::endl;
-        if (res != CURLE_OK) {
+        if (res == CURLE_OK) {
+            curl_easy_getinfo(m_curl, CURLINFO_RESPONSE_CODE, &response.code);
+        } else {
             fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
         }
-        //std::cout << response.header << std::endl;
-        //std::cout << response.content << std::endl;
-        curl_easy_getinfo(m_curl, CURLINFO_RESPONSE_CODE, &response.code);
     }
-
     return response;
 }
 

@@ -8,6 +8,12 @@
 
 namespace github {
 
+typedef enum {
+    lastDay,
+    lastWeek,
+    lastMonth
+} elapsedTime_t;
+
 struct Commit {
     std::string author;
     std::string message;
@@ -18,12 +24,16 @@ class Repo
 {
 public:
     Repo();
-    explicit Repo(const std::string& reponame);
+    explicit Repo(const std::string& owner, const std::string& name);
     virtual ~Repo();
-    std::vector<Commit> commits();
+    std::vector<Commit> commits(const elapsedTime_t time);
+    std::string description();
 
 private:
-    std::string m_reponame;
+    std::string elapsedTime(const elapsedTime_t time);
+
+    std::string m_owner;
+    std::string m_name;
     http::Client m_client;
     static const std::string githubApiUrl;
 };
