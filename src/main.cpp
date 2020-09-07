@@ -21,16 +21,11 @@ void printCommits(const github::Commits& commits)
               << std::setw(22) << "Author"
               << "   Message" << std::endl;
     for (auto commit : commits) {
-        commit.message.resize(40);
-        std::remove_if(commit.message.begin(), commit.message.end(), [](char c) {
+        std::remove_if(commit.message.rbegin(), commit.message.rend(), [](char c) {
             return (not std::isprint(c) or std::iscntrl(c));
         });
 
-        for (char m : commit.message) {
-            std::cout << int(m) << ",";
-        }
-        std::cout << std::endl;
-        commit.message.resize(40);
+        commit.message.resize(60);
         std::cout << commit.date << "  " << std::setw(20)
                 << commit.author << " [ "
                 << commit.message << " ... ]" << std::endl;
