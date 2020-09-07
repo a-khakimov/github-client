@@ -15,18 +15,22 @@ static size_t writeCallback(void *contents, const size_t size, const size_t nmem
 Client::Client()
 {
     m_curl = curl_easy_init();
+    if (m_curl == nullptr) {
+        throw Exception("curl_easy_init() failed");
+    }
 }
 
 Client::~Client()
 {
-    curl_easy_cleanup(m_curl);
+    if (m_curl != nullptr) {
+        curl_easy_cleanup(m_curl);
+    }
 }
 
 Response Client::doGet(const std::string &url, const std::initializer_list<Param> &params)
 {
     Response response;
     const std::string fullUrl = makeFullUrl(url, params);
-    //std::cout << "fullUrl=" << fullUrl << std::endl;
 
     if (m_curl != nullptr) {
         curl_easy_setopt(m_curl, CURLOPT_URL, fullUrl.c_str());
@@ -41,8 +45,6 @@ Response Client::doGet(const std::string &url, const std::initializer_list<Param
         CURLcode res = curl_easy_perform(m_curl);
         if (res == CURLE_OK) {
             curl_easy_getinfo(m_curl, CURLINFO_RESPONSE_CODE, &response.code);
-        } else {
-            fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
         }
     }
     return response;
@@ -56,6 +58,5 @@ std::string Client::makeFullUrl(const std::string &url, const std::initializer_l
     }
     return fullUrl;
 }
-
 
 }

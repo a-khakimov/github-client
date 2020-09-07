@@ -9,10 +9,10 @@
 namespace github {
 
 typedef enum {
-    lastDay,
-    lastWeek,
-    lastMonth
-} elapsedTime_t;
+    forLastDay,
+    forLastWeek,
+    forLastMonth
+} RangeOfCommits;
 
 struct Commit {
     std::string author;
@@ -20,22 +20,54 @@ struct Commit {
     std::string date;
 };
 
+typedef std::vector<github::Commit> Commits;
+
 class Repo
 {
 public:
-    Repo();
     explicit Repo(const std::string& owner, const std::string& name);
     virtual ~Repo();
-    std::vector<Commit> commits(const elapsedTime_t time);
-    std::string description();
+    Commits commits(const RangeOfCommits range);
+    std::string fullname() const noexcept;
+    std::string description() const noexcept;
+    std::string homepage() const noexcept;
+    std::string languages() const noexcept;
+    std::string giturl() const noexcept;
+    std::string createdDate() const noexcept;
+    std::string updatedDate() const noexcept;
 
 private:
-    std::string elapsedTime(const elapsedTime_t time);
+    std::string elapsedTime(const RangeOfCommits range);
+    void getStringRepoAttr();
 
+    struct RepoAttributes {
+        std::string fullname;
+        std::string description;
+        std::string homepage;
+        std::string languages;
+        std::string giturl;
+        std::string createdDate;
+        std::string updatedDate;
+    };
+
+    RepoAttributes m_repoAttributes;
     std::string m_owner;
     std::string m_name;
     http::Client m_client;
     static const std::string githubApiUrl;
+};
+
+struct Exception : public std::exception
+{
+    Exception(const std::string& message)
+    {
+        m_message = "Github::Repo() exception: " + message;
+    }
+    const char* what() const throw ()
+    {
+        return m_message.c_str();
+    }
+    std::string m_message;
 };
 
 }

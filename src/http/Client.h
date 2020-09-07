@@ -3,36 +3,10 @@
 
 #include <string>
 #include <curl/curl.h>
+#include "Param.h"
+#include "Response.h"
 
 namespace http {
-
-class Param {
-public:
-    Param(const std::string& key, const std::string& value)
-        : m_key(key), m_value(value) {}
-
-    Param(std::string&& key, std::string&& value)
-        : m_key(std::move(key)), m_value(std::move(value)) {}
-
-    std::string key() const noexcept
-    {
-        return m_key;
-    }
-    std::string value() const noexcept
-    {
-        return m_value;
-    }
-private:
-    std::string m_key;
-    std::string m_value;
-};
-
-struct Response {
-    Response() : code(-1) {}
-    long code;
-    std::string header;
-    std::string content;
-};
 
 class Client
 {
@@ -45,6 +19,20 @@ private:
     CURL* m_curl;
     std::string makeFullUrl(const std::string& url, const std::initializer_list<Param>& params = {});
 };
+
+struct Exception : public std::exception
+{
+    Exception(const std::string& message)
+    {
+        m_message = "Http::Client() exception: " + message;
+    }
+    const char* what() const throw ()
+    {
+        return m_message.c_str();
+    }
+    std::string m_message;
+};
+
 
 }
 
