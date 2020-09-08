@@ -57,7 +57,7 @@ Arguments:
 	 -i  Print repo information
 ```
 
-Информация о репозитори:
+Информация о репозитории:
 
 ```bash
 $ ./github-client -o curl -r curl -i
@@ -87,3 +87,11 @@ $ ./github-client -o curl -r curl -c week
 ....
 --------------- Commits -------------------
 ```
+
+# TODO-list
+
+* [ ] Тесты!!!
+* [ ] Возможность выбирать ветку
+* [ ] Отображение списка веток
+* [ ] Отображение списка issues
+* [ ] Отображение списка pull requests
