@@ -1,3 +1,6 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
+
 #include <iostream>
 #include <getopt.h>
 #include <iomanip>
@@ -21,10 +24,10 @@ void printCommits(const github::Commits& commits)
               << std::setw(22) << "Author"
               << "   Message" << std::endl;
     for (auto commit : commits) {
-        std::remove_if(commit.message.rbegin(), commit.message.rend(), [](char c) {
+        auto newend = std::remove_if(commit.message.begin(), commit.message.end(), [](char c) {
             return (not std::isprint(c) or std::iscntrl(c));
         });
-
+        commit.message.erase(newend, commit.message.end());
         commit.message.resize(60);
         std::cout << commit.date << "  " << std::setw(20)
                 << commit.author << " [ "
