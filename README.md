@@ -4,18 +4,41 @@
 
 ## Зависимости
 
-* libcurl
-* nlohmann
+* [libcurl](https://github.com/curl/curl)
+* [nlohmann-json](https://github.com/nlohmann/json)
 
 ## Сборка
 
-### Linux (cmake)
+### Linux (Ubuntu)
+
+#### Установка зависимостей
 
 ```bash
-$ mkdir build
-$ cd build/
-$ cmake ..
+$ apt install -y nlohmann-json-dev
+$ apt install libcurl4-openssl-dev
+```
+
+#### Сборка
+
+```bash
 $ make
+```
+
+### Windows (msys)
+
+#### Установка зависимостей
+
+```
+# pacman -S libcurl-devel
+# pacman -S mingw-w64-x86_64-nlohmann-json
+```
+
+#### Сборка
+
+`INC=-I/mingw64/include` - путь к `nlohmann/json.hpp`.
+
+```
+# INC=-I/mingw64/include make
 ```
 
 ## Запуск
